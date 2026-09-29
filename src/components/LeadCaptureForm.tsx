@@ -47,11 +47,15 @@ export function LeadCaptureForm() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
   function handleBookingClick() {
+    const prefill = { name: values.name.trim(), email: values.email.trim() };
     if (isEmbeddable()) {
       setBookingOpen(true);
       return;
     }
-    window.open(BOOKING_URL.trim(), "_blank", "noopener,noreferrer");
+    const url = new URL(BOOKING_URL.trim());
+    if (prefill.name) url.searchParams.set("name", prefill.name);
+    if (prefill.email) url.searchParams.set("email", prefill.email);
+    window.open(url.toString(), "_blank", "noopener,noreferrer");
   }
 
 
@@ -96,7 +100,11 @@ export function LeadCaptureForm() {
         >
           Book My Strategy Call <ArrowRight className="ml-2 h-4 w-4" />
         </button>
-        <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+        <BookingModal
+          open={bookingOpen}
+          onClose={() => setBookingOpen(false)}
+          prefill={{ name: values.name.trim(), email: values.email.trim() }}
+        />
       </div>
     );
   }
