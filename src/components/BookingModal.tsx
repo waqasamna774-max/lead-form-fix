@@ -1,8 +1,16 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import { getEmbedUrl } from "@/config/booking";
+import { getEmbedUrl, type BookingPrefill } from "@/config/booking";
 
-export function BookingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function BookingModal({
+  open,
+  onClose,
+  prefill,
+}: {
+  open: boolean;
+  onClose: () => void;
+  prefill?: BookingPrefill;
+}) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -39,7 +47,7 @@ export function BookingModal({ open, onClose }: { open: boolean; onClose: () => 
           <X className="h-4 w-4" />
         </button>
         <iframe
-          src={getEmbedUrl()}
+          src={getEmbedUrl(undefined, prefill)}
           title="Book your strategy call"
           className="h-full w-full border-0"
           allow="camera; microphone; fullscreen; payment"
