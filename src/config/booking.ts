@@ -50,8 +50,11 @@ export function isEmbeddable(url: string = BOOKING_URL): boolean {
   }
 }
 
-/** Embed-friendly variant of the booking URL. */
-export function getEmbedUrl(url: string = BOOKING_URL): string {
+/** Optional invitee details to prefill inside the booking widget. */
+export type BookingPrefill = { name?: string; email?: string };
+
+/** Embed-friendly variant of the booking URL, with optional Calendly prefill. */
+export function getEmbedUrl(url: string = BOOKING_URL, prefill?: BookingPrefill): string {
   const trimmed = url.trim();
   try {
     const parsed = new URL(trimmed);
@@ -60,9 +63,15 @@ export function getEmbedUrl(url: string = BOOKING_URL): string {
       parsed.searchParams.set("embed_domain", "booking");
       parsed.searchParams.set("embed_type", "Inline");
       parsed.searchParams.set("hide_gdpr_banner", "1");
+      const name = prefill?.name?.trim();
+      const email = prefill?.email?.trim();
+      if (name) parsed.searchParams.set("name", name);
+      if (email) parsed.searchParams.set("email", email);
     }
     if (host.endsWith("cal.com")) {
       parsed.searchParams.set("embed", "true");
+      if (prefill?.name?.trim()) parsed.searchParams.set("name", prefill.name.trim());
+      if (prefill?.email?.trim()) parsed.searchParams.set("email", prefill.email.trim());
     }
     return parsed.toString();
   } catch {
